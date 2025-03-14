@@ -410,6 +410,58 @@ class NesOverlayTransitionTheme
   }
 }
 
+/// {@template nes_progress_indicator_theme}
+/// Class with information regarding [NesProgressIndicator] inside NesUI.
+/// {@endtemplate}
+class NesProgressIndicatorTheme
+    extends ThemeExtension<NesProgressIndicatorTheme> {
+  /// {@macro nes_progress_indicator_theme}
+  const NesProgressIndicatorTheme({
+    required this.background,
+    required this.color,
+  });
+
+  /// The color for the progress indicator background.
+  /// Defaults to [ColorScheme.surface]
+  final Color background;
+
+  /// The color for the progress indicator.
+  /// Defaults to [ColorScheme.primary]
+  final Color color;
+
+  @override
+  NesProgressIndicatorTheme copyWith({
+    Color? background,
+    Color? color,
+  }) {
+    return NesProgressIndicatorTheme(
+      background: background ?? this.background,
+      color: color ?? this.color,
+    );
+  }
+
+  @override
+  ThemeExtension<NesProgressIndicatorTheme> lerp(
+    ThemeExtension<NesProgressIndicatorTheme>? other,
+    double t,
+  ) {
+    final otherExt = other as NesProgressIndicatorTheme?;
+
+    return NesProgressIndicatorTheme(
+      background: ColorTween(
+            begin: background,
+            end: otherExt?.background,
+          ).lerp(t) ??
+          background,
+      color: ColorTween(
+            begin: color,
+            end: otherExt?.color,
+          ).lerp(t) ??
+          color,
+    );
+  }
+}
+
 /// {@template nes_selection_list_them}
 /// Class with information regarding Selection Lists.
 /// {@endtemplate}
@@ -457,11 +509,11 @@ class NesSelectionListTheme extends ThemeExtension<NesSelectionListTheme> {
   }
 }
 
-/// {@template nes_button_theme}
-/// Class with information regarding buttons inside Flutter Nes.
+/// {@template nes_snack_bar_theme}
+/// Class with information regarding [NesSnackbar] inside Flutter Nes.
 /// {@endtemplate}
 class NesSnackbarTheme extends ThemeExtension<NesSnackbarTheme> {
-  /// {@macro nes_button_theme}
+  /// {@macro nes_snack_bar_theme}
   const NesSnackbarTheme({
     required this.normal,
     required this.success,
@@ -529,7 +581,7 @@ class NesSnackbarTheme extends ThemeExtension<NesSnackbarTheme> {
 }
 
 /// {@template nes_tooltip_theme}
-/// Class with information regarding tooltips inside NesUI.
+/// Class with information regarding [NesTooltip] inside NesUI.
 /// {@endtemplate}
 class NesTooltipTheme extends ThemeExtension<NesTooltipTheme> {
   /// {@macro nes_tooltip_theme}
@@ -539,11 +591,11 @@ class NesTooltipTheme extends ThemeExtension<NesTooltipTheme> {
   });
 
   /// The color for the tooltip background.
-  /// Defaults to TextTheme.bodyMedium.
+  /// Defaults to [ThemeData].[ColorScheme.surface]
   final Color background;
 
   /// The color for the text message.
-  /// Defaults to  Theme.background.
+  /// Defaults to [TextTheme.bodyMedium].
   final Color textColor;
 
   @override
@@ -580,7 +632,7 @@ class NesTooltipTheme extends ThemeExtension<NesTooltipTheme> {
 }
 
 /// {@template nes_container_theme}
-/// Class with information regarding containers inside NesUI.
+/// Class with information regarding [NesContainer] inside NesUI.
 ///
 /// A [NesContainerTheme] is an optional custom theme for NesUI containers,
 /// by default, [flutterNesTheme] will create a [NesContainerTheme] where:
@@ -676,7 +728,7 @@ class NesContainerTheme extends ThemeExtension<NesContainerTheme> {
 }
 
 /// {@template nes_bottom_sheet_theme}
-/// Class with information regarding bottom sheets inside NesUI.
+/// Class with information regarding [NesBottomSheet] inside NesUI.
 ///
 /// A [NesBottomSheetTheme] is an optional custom theme for NesUI bottom sheets,
 /// by default, [flutterNesTheme] will create a [NesBottomSheetTheme] where
@@ -848,6 +900,7 @@ ThemeData flutterNesTheme({
     markerSize: Size(24, 24),
     itemMinHeight: 32,
   ),
+  NesProgressIndicatorTheme? nesProgressIndicatorTheme,
   NesOverlayTransitionTheme? nesOverlayTransitionTheme,
   NesSnackbarTheme nesSnackbarTheme = const NesSnackbarTheme(
     normal: Color(0xffffffff),
@@ -890,6 +943,12 @@ ThemeData flutterNesTheme({
     themeData.textTheme,
   );
 
+  final progressIndicatorTheme = nesProgressIndicatorTheme ??
+      NesProgressIndicatorTheme(
+        background: textTheme.bodyMedium?.color ?? Colors.black,
+        color: themeData.colorScheme.primary,
+      );
+
   final toolTipTheme = nesTooltipTheme ??
       NesTooltipTheme(
         background: textTheme.bodyMedium?.color ?? Colors.black,
@@ -916,6 +975,7 @@ ThemeData flutterNesTheme({
       nesButtonTheme,
       iconTheme,
       nesSelectionListTheme,
+      progressIndicatorTheme,
       overlayTransitionTheme,
       nesSnackbarTheme,
       toolTipTheme,
